@@ -17,7 +17,7 @@ public class JamSessionLogger extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        JamSessionManager loggedSession = JamSessionManager.createLoggedJamSession("", "res/sugar.mp3", "logged.txt");
+        JamSessionManager loggedSession = JamSessionManager.createLoggedJamSession("All about the Bass", "res/all-about-the-bass.mp3", "all-about-the-bass.txt");
         primaryStage.setTitle("LOGGER");
         primaryStage.setScene(new Scene(loggedSession.getRoot()));
         primaryStage.show();

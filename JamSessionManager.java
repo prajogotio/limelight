@@ -213,7 +213,7 @@ public class JamSessionManager {
                 numberOfBeats += k;
                 for (int j = 0; j < k; ++j) {
                     long timeOfOccurance = (long) scanner.nextDouble();
-                    timeOfOccurance  = (timeOfOccurance / 200L) * 200L;
+                    timeOfOccurance  = ((timeOfOccurance - 100L) / 100L) * 100L;
                     musicBars.get(i).addMusicBeat(new MusicBeat(MUSIC_BEAT_WIDTH, MUSIC_BEAT_HEIGHT, timeOfOccurance));
                 }
             }

@@ -14,7 +14,7 @@ public class JamSessionTest extends Application{
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        JamSession jamSession = new JamSession("jams/sugar.txt");
+        JamSession jamSession = new JamSession("jams/im-not-the-only-one.txt");
         jamSession.startJam();
     }
 }

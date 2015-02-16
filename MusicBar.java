@@ -3,6 +3,8 @@ package limelight;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 /**
@@ -122,5 +124,30 @@ public class MusicBar {
 
     public int getScore() {
         return currentScore;
+    }
+
+    public double getTimeOfCreation() { return timeOfCreation; }
+}
+
+class LoggedMusicBar extends MusicBar {
+    private ArrayList<Double> log;
+
+    public LoggedMusicBar(double left, double top, double width, double height, double markHeight, double timeOfCreation, double timeToScrollThrough) {
+        super( left,  top,  width,  height,  markHeight,  timeOfCreation,  timeToScrollThrough);
+        log = new ArrayList<Double>();
+    }
+
+    @Override
+    public void pressedHandler() {
+        log.add(Double.valueOf((double)(System.currentTimeMillis() - super.getTimeOfCreation()) ));
+        super.pressedHandler();
+    }
+
+    public void appendToSessionFile(PrintWriter printWriter) {
+        printWriter.print(log.size());
+        for(Double d : log) {
+            printWriter.format(" %.2f", (double) d);
+        }
+        printWriter.println();
     }
 }

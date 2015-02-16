@@ -85,7 +85,7 @@ public class JamSession{
     public void jamSessionIsOverHandler() {
         statusLoop.stop();
         jamSessionManager.stop();
-        setAnnouncement("Jam is Over\nYou scored: "+ jamSessionManager.getCurrentScore());
+        setAnnouncement(String.format("Jam is Over\nScore: %d\nCompletenes: %2d%%", jamSessionManager.getCurrentScore(), (int)((jamSessionManager.getCurrentScore()*100.0/(double)jamSessionManager.getNumberOfBeats()))));
     }
 
     private String getTimeElapsedInformation() {
@@ -120,4 +120,14 @@ public class JamSession{
         fadeTransition.play();
     }
 
+    private void setQuickAnnouncement(String announcement) {
+        this.announcement.setText(announcement);
+        FadeTransition fadeTransition = new FadeTransition(Duration.millis(500), this.announcement);
+        fadeTransition.setFromValue(0.9);
+        fadeTransition.setToValue(0.0);
+        fadeTransition.setCycleCount(1);
+        fadeTransition.play();
+    }
+
 }
+

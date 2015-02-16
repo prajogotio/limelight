@@ -15,7 +15,10 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.InputStream;
+import java.io.PrintWriter;
 import java.util.*;
 
 /**
@@ -55,6 +58,7 @@ public class JamSessionManager {
     private Map<String, Integer> commands;
     private int currentScore;
     private String songTitle;
+    private int numberOfBeats;
 
     public static JamSessionManager createSessionFromFile(String sessionFile) {
         return new JamSessionManager(sessionFile);
@@ -69,12 +73,14 @@ public class JamSessionManager {
         return root;
     }
 
-    private JamSessionManager() {};
-
-    private JamSessionManager(String sessionFile) {
+    private JamSessionManager() {
         currentScore = 0;
         commands = new HashMap<String, Integer>();
         timeOfCreation = System.currentTimeMillis();
+    };
+
+    private JamSessionManager(String sessionFile) {
+        this();
         constructJamSessionFromFile(sessionFile);
         initializeCanvas();
         initializeJamSessionLoop();
@@ -201,12 +207,17 @@ public class JamSessionManager {
             songDuration = scanner.nextDouble();
             timeOfScroll = scanner.nextDouble();
             initializeMusicBars();
+            numberOfBeats = 0;
             for (int i = 0; i < NUMBER_OF_MUSIC_BAR; ++i) {
                 int k = scanner.nextInt();
+                numberOfBeats += k;
                 for (int j = 0; j < k; ++j) {
-                    musicBars.get(i).addMusicBeat(new MusicBeat(MUSIC_BEAT_WIDTH, MUSIC_BEAT_HEIGHT, scanner.nextDouble()));
+                    long timeOfOccurance = (long) scanner.nextDouble();
+                    timeOfOccurance  = (timeOfOccurance / 200L) * 200L;
+                    musicBars.get(i).addMusicBeat(new MusicBeat(MUSIC_BEAT_WIDTH, MUSIC_BEAT_HEIGHT, timeOfOccurance));
                 }
             }
+            scanner.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -252,6 +263,13 @@ public class JamSessionManager {
                 }
                 if(keyCode.equals(KeyCode.L)) {
                     if(isCommandNotPressed(SEVENTH_BAR_PRESSED)) commands.put(SEVENTH_BAR_PRESSED, KEY_IS_ACTIVE);
+                }
+
+                if(isLogging) {
+                    if(keyCode.equals(KeyCode.P)) {
+                        stop();
+                        logSession();
+                    }
                 }
 
             }
@@ -326,4 +344,60 @@ public class JamSessionManager {
     public double getTimeOfCreation() {
         return timeOfCreation;
     }
+
+    public int getNumberOfBeats() { return numberOfBeats; }
+
+
+
+
+
+
+
+    //Extension for Session Logging
+    private PrintWriter printWriter;
+    private boolean isLogging;
+
+    public static JamSessionManager createLoggedJamSession(String songTitle, String songFileName, String logFile) {
+        return new JamSessionManager(songTitle, songFileName, logFile);
+    }
+
+    private JamSessionManager(String songTitle, String songFileName, String logFile) {
+        this();
+        isLogging = true;
+        songDuration = 1000000;
+        timeOfScroll = 1000;
+        musicBars = new ArrayList<MusicBar>();
+        double dLeft = (CANVAS_WIDTH - NUMBER_OF_MUSIC_BAR * MUSIC_BAR_WIDTH) / 2.0;
+        double dTop = (CANVAS_HEIGHT - MUSIC_BAR_HEIGHT) / 2.0;
+        for (int i = 0; i < NUMBER_OF_MUSIC_BAR; ++i) {
+            musicBars.add(new LoggedMusicBar(i * MUSIC_BAR_WIDTH + dLeft, dTop, MUSIC_BAR_WIDTH, MUSIC_BAR_HEIGHT, MUSIC_BAR_MARK_HEIGHT, timeOfCreation, timeOfScroll));
+        }
+        initializeMediaPlayer(songFileName);
+        initializeCanvas();
+        initializeJamSessionLoop();
+        initializeKeyEventHandler();
+
+        try {
+            printWriter = new PrintWriter(new BufferedWriter(new FileWriter(logFile)), true);
+            printWriter.println(songFileName);
+            printWriter.println(songTitle);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void logSession() {
+        try {
+            printWriter.format("%.2f ", (double) System.currentTimeMillis());
+            printWriter.format("%.2f\n", 1000.0);
+            for (MusicBar musicBar : musicBars) {
+                LoggedMusicBar loggedMusicBar = (LoggedMusicBar) musicBar;
+                loggedMusicBar.appendToSessionFile(printWriter);
+            }
+            printWriter.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }

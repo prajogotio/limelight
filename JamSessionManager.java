@@ -322,7 +322,7 @@ public class JamSessionManager {
         timeline.getKeyFrames().add(new KeyFrame(Duration.millis(1000/60), new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                mediaPlayer.setVolume(mediaPlayer.getVolume() * 0.99);
+                mediaPlayer.setVolume(mediaPlayer.getVolume() * 0.9);
                 if(mediaPlayer.getVolume() < 0.0001) {
                     timeline.stop();
                     mediaPlayer.stop();

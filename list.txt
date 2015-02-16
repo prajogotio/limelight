@@ -1,0 +1,15 @@
+7
+jams/sugar.txt
+res/sugar.jpg
+jams/thinking-out-loud.txt
+res/thinking-out-loud.jpg
+jams/blank-space.txt
+res/blank-space.jpg
+jams/take-me-to-church.txt
+res/take-me-to-church.jpg
+jams/all-about-the-bass.txt
+res/all-about-the-bass.jpg
+jams/im-not-the-only-one.txt
+res/im-not-the-only-one.jpg
+jams/uptown-funk.txt
+res/uptown-funk.jpg

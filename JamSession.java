@@ -9,6 +9,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -17,6 +18,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 
 /**
@@ -37,12 +39,21 @@ public class JamSession{
         jamSessionManager = JamSessionManager.createSessionFromFile(sessionFileName);
         initializeJamStage();
         initializeStatusLoop();
+        jamStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent event) {
+                jamSessionIsOverHandler();
+                jamStage.close();
+            }
+        });
         jamStage.show();
     }
 
     private void initializeJamStage() {
         jamStage = new Stage();
         jamStage.setTitle("Jam Session");
+        jamStage.getIcons().add(new Image(getClass().getResourceAsStream("limelight.png")));
+
         root = new StackPane();
         root.getChildren().add(jamSessionManager.getRoot());
 
